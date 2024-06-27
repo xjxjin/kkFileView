@@ -1,3 +1,4 @@
+SHELL ["/bin/bash", "-x"]
 # 指定基础镜像和构建平台
 FROM --platform=$BUILDPLATFORM ubuntu:20.04 AS base
 
@@ -60,8 +61,7 @@ RUN sed -i 's/http:\/\/archive.ubuntu.com/https:\/\/mirrors.aliyun.com/g' /etc/a
 #     rm -rf /var/lib/apt/lists/*
 
 # 打印开始清理APT缓存的信息
-RUN echo "Cleaning APT cache..." && \
-    apt-get clean && apt-get update
+RUN apt-get clean && apt-get update
 
 # 打印开始安装基础软件包的信息
 RUN echo "Installing base packages..." && \
