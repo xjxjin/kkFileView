@@ -9,7 +9,7 @@ RUN sed -i 's/http:\/\/archive.ubuntu.com/https:\/\/mirrors.aliyun.com/g' /etc/a
     sed -i 's/# deb/deb/g' /etc/apt/sources.list
 
 # 安装依赖和Java JDK
-RUN apt-get clean && apt-get update
+RUN apt-get update
 RUN apt-get install -y --no-install-recommends \
         ca-certificates \
         locales \
