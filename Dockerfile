@@ -50,10 +50,10 @@ RUN apt-get purge -y --auto-remove && \
 #    rm -rf /tmp/* /var/lib/apt/lists/*
 
 # 更新字体缓存
-RUN cd /usr/share/fonts/chinese && \
-    mkfontscale && \
-    mkfontdir && \
-    fc-cache -fv
+#RUN cd /usr/share/fonts/chinese && \
+#    mkfontscale && \
+#    mkfontdir && \
+#    fc-cache -fv
 
 # 设置环境变量
 ENV JAVA_HOME /usr/local/jdk1.8.0_251
