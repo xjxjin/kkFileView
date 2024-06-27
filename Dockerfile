@@ -1,112 +1,45 @@
-SHELL ["/bin/bash", "-x"]
-# 指定基础镜像和构建平台
+# 指定基础镜像，使用当前构建平台
 FROM --platform=$BUILDPLATFORM ubuntu:20.04 AS base
 
 # 维护者信息
 LABEL maintainer="xjxjin <1702@163.com>"
-
-# 内置一些常用的中文字体，避免普遍性乱码
-# COPY fonts/* /usr/share/fonts/chinese/
 
 # 更改软件源为阿里云镜像
 RUN sed -i 's/http:\/\/archive.ubuntu.com/https:\/\/mirrors.aliyun.com/g' /etc/apt/sources.list && \
     sed -i 's/# deb/deb/g' /etc/apt/sources.list
 
 # 安装依赖和Java JDK
-#RUN apt-get clean && apt-get update && \
-#    apt-get install -y --no-install-recommends \
-#        ca-certificates \
-#        locales \
-#        language-pack-zh-hans \
-#        fontconfig \
-#        ttf-mscorefonts-installer \
-#        ttf-wqy-microhei \
-#        ttf-wqy-zenhei \
-#        xfonts-wqy \
-#        wget && \
-#    localedef -i zh_CN -c -f UTF-8 -A /usr/share/locale/locale.alias zh_CN.UTF-8 && \
-#    locale-gen zh_CN.UTF-8 && \
-#    export DEBIAN_FRONTEND=noninteractive && \
-#    apt-get install -y tzdata && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
-    # cd /tmp && \
-    # wget https://kkview.cn/resource/server-jre-8u251-linux-x64.tar.gz && \
-    # tar -zxf /tmp/server-jre-8u251-linux-x64.tar.gz && mv /tmp/jdk1.8.0_251 /usr/local/ && \
-#    rm -rf /var/lib/apt/lists/*
-
-
-# RUN apt-get clean && apt-get update && \
-#     apt-get install -y --no-install-recommends \
-#         ca-certificates \
-#         locales \
-#         fontconfig \
-#         wget && \
-#     apt-get update && \
-#     apt-get install -y --no-install-recommends \
-#         language-pack-zh-hans \
-#         ttf-mscorefonts-installer \
-#         ttf-wqy-microhei \
-#         ttf-wqy-zenhei \
-#         xfonts-wqy && \
-#     localedef -i zh_CN -c -f UTF-8 -A /usr/share/locale/locale.alias zh_CN.UTF-8 && \
-#     locale-gen zh_CN.UTF-8 && \
-#     export DEBIAN_FRONTEND=noninteractive && \
-#     apt-get install -y tzdata && \
-#     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
-#     cd /tmp && \
-#     wget https://kkview.cn/resource/server-jre-8u251-linux-x64.tar.gz && \
-#     tar -zxf /tmp/server-jre-8u251-linux-x64.tar.gz && \
-#     mv /tmp/jdk1.8.0_251 /usr/local/ && \
-#     apt-get purge -y --auto-remove && \
-#     apt-get clean && \
-#     rm -rf /var/lib/apt/lists/*
-
-# 打印开始清理APT缓存的信息
-RUN apt-get clean && apt-get update
-
-# 打印开始安装基础软件包的信息
-RUN echo "Installing base packages..." && \
+RUN apt-get clean && apt-get update && \
     apt-get install -y --no-install-recommends \
         ca-certificates \
         locales \
         fontconfig \
-        wget
-
-# 再次更新APT缓存并安装中文语言包和字体
-RUN echo "Updating APT cache and installing Chinese language packs and fonts..." && \
+        wget && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
         language-pack-zh-hans \
         ttf-mscorefonts-installer \
         ttf-wqy-microhei \
         ttf-wqy-zenhei \
-        xfonts-wqy
-
-# 设置中国时区
-RUN echo "Setting up timezone to Asia/Shanghai..." && \
-    export DEBIAN_FRONTEND=noninteractive && \
-    apt-get install -y tzdata && \
-    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-
-# 下载并安装Java JDK
-RUN echo "Downloading and installing Java JDK..." && \
+        xfonts-wqy && \
     cd /tmp && \
     wget https://kkview.cn/resource/server-jre-8u251-linux-x64.tar.gz && \
     tar -zxf /tmp/server-jre-8u251-linux-x64.tar.gz && \
     mv /tmp/jdk1.8.0_251 /usr/local/
 
-# 清理工作
-RUN echo "Cleaning up unnecessary files..." && \
-    apt-get purge -y --auto-remove && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# 设置中国时区
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get install -y tzdata && \
+    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 # 生成本地化环境
-RUN echo "Generating locale zh_CN.UTF-8..." && \
-    localedef -i zh_CN -c -f UTF-8 -A /usr/share/locale/locale.alias zh_CN.UTF-8 && \
+RUN localedef -i zh_CN -c -f UTF-8 -A /usr/share/locale/locale.alias zh_CN.UTF-8 && \
     locale-gen zh_CN.UTF-8
 
-# 打印完成信息
-RUN echo "All steps completed successfully."
+# 清理工作
+RUN apt-get purge -y --auto-remove && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # 安装LibreOffice
 RUN apt-get update && \
@@ -129,14 +62,14 @@ ENV PATH "$PATH:$JAVA_HOME/bin"
 ENV LANG zh_CN.UTF-8
 ENV LC_ALL zh_CN.UTF-8
 
-# 应用程序构建阶段，复制应用程序文件并设置ENTRYPOINT
 # 应用程序构建阶段，从上下文复制Maven构建的artifacts
 FROM base AS app
 WORKDIR /opt
-COPY --from=0 /.docker-artifacts/kkFileView-*.tar.gz /opt/
+# 假定Maven构建的tar.gz文件在项目的根目录下
+COPY kkFileView-*.tar.gz /opt/
 RUN tar -xzf /opt/kkFileView-*.tar.gz -C /opt && \
     rm /opt/kkFileView-*.tar.gz
 
-# 设置环境变量和ENTRYPOINT
-ENV KKFILEVIEW_BIN_FOLDER /opt/kkFileView-4.4.0-beta/bin
-ENTRYPOINT ["java", "-Dfile.encoding=UTF-8", "-Dspring.config.location=/opt/kkFileView-4.4.0-beta/config/application.properties", "-jar", "$KKFILEVIEW_BIN_FOLDER/kkFileView-4.4.0-beta.jar"]
+# 设置工作目录和ENTRYPOINT
+WORKDIR /opt/kkFileView-4.4.0-beta
+ENTRYPOINT ["java", "-Dfile.encoding=UTF-8", "-Dspring.config.location=/opt/kkFileView-4.4.0-beta/config/application.properties", "-jar", "/opt/kkFileView-4.4.0-beta/bin/kkFileView-4.4.0-beta.jar"]
