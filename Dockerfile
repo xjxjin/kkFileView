@@ -5,7 +5,7 @@ FROM --platform=$BUILDPLATFORM ubuntu:20.04 AS base
 LABEL maintainer="xjxjin <1702@163.com>"
 
 # 内置一些常用的中文字体，避免普遍性乱码
-COPY fonts/* /usr/share/fonts/chinese/
+# COPY fonts/* /usr/share/fonts/chinese/
 
 # 更改软件源为阿里云镜像
 RUN sed -i 's/http:\/\/archive.ubuntu.com/https:\/\/mirrors.aliyun.com/g' /etc/apt/sources.list && \
