@@ -42,12 +42,12 @@ RUN apt-get purge -y --auto-remove && \
     rm -rf /var/lib/apt/lists/*
 
 # 安装LibreOffice
-RUN apt-get update && \
-    apt-get install -y libxrender1 libxinerama1 libxt6 libxext-dev libfreetype6-dev libcairo2 libcups2 libx11-xcb1 libnss3 && \
-    wget https://downloadarchive.documentfoundation.org/libreoffice/old/7.5.3.2/deb/x86_64/LibreOffice_7.5.3.2_Linux_x86-64_deb.tar.gz && \
-    tar -zxf /tmp/LibreOffice_7.5.3.2_Linux_x86-64_deb.tar.gz && cd /tmp/LibreOffice_7.5.3.2_Linux_x86-64_deb/DEBS && \
-    dpkg -i *.deb && \
-    rm -rf /tmp/* /var/lib/apt/lists/*
+#RUN apt-get update && \
+#    apt-get install -y libxrender1 libxinerama1 libxt6 libxext-dev libfreetype6-dev libcairo2 libcups2 libx11-xcb1 libnss3 && \
+#    wget https://downloadarchive.documentfoundation.org/libreoffice/old/7.5.3.2/deb/x86_64/LibreOffice_7.5.3.2_Linux_x86-64_deb.tar.gz && \
+#    tar -zxf /tmp/LibreOffice_7.5.3.2_Linux_x86-64_deb.tar.gz && cd /tmp/LibreOffice_7.5.3.2_Linux_x86-64_deb/DEBS && \
+#    dpkg -i *.deb && \
+#    rm -rf /tmp/* /var/lib/apt/lists/*
 
 # 更新字体缓存
 RUN cd /usr/share/fonts/chinese && \
