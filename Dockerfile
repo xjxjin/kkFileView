@@ -27,9 +27,9 @@ RUN apt-get clean && apt-get update && \
     locale-gen zh_CN.UTF-8 && \
     export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y tzdata && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
-    cd /tmp && \
-    wget https://kkview.cn/resource/server-jre-8u251-linux-x64.tar.gz && \
-    tar -zxf /tmp/server-jre-8u251-linux-x64.tar.gz && mv /tmp/jdk1.8.0_251 /usr/local/ && \
+    # cd /tmp && \
+    # wget https://kkview.cn/resource/server-jre-8u251-linux-x64.tar.gz && \
+    # tar -zxf /tmp/server-jre-8u251-linux-x64.tar.gz && mv /tmp/jdk1.8.0_251 /usr/local/ && \
     rm -rf /var/lib/apt/lists/*
 
 # 安装LibreOffice
