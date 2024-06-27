@@ -12,24 +12,51 @@ RUN sed -i 's/http:\/\/archive.ubuntu.com/https:\/\/mirrors.aliyun.com/g' /etc/a
     sed -i 's/# deb/deb/g' /etc/apt/sources.list
 
 # 安装依赖和Java JDK
+#RUN apt-get clean && apt-get update && \
+#    apt-get install -y --no-install-recommends \
+#        ca-certificates \
+#        locales \
+#        language-pack-zh-hans \
+#        fontconfig \
+#        ttf-mscorefonts-installer \
+#        ttf-wqy-microhei \
+#        ttf-wqy-zenhei \
+#        xfonts-wqy \
+#        wget && \
+#    localedef -i zh_CN -c -f UTF-8 -A /usr/share/locale/locale.alias zh_CN.UTF-8 && \
+#    locale-gen zh_CN.UTF-8 && \
+#    export DEBIAN_FRONTEND=noninteractive && \
+#    apt-get install -y tzdata && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    # cd /tmp && \
+    # wget https://kkview.cn/resource/server-jre-8u251-linux-x64.tar.gz && \
+    # tar -zxf /tmp/server-jre-8u251-linux-x64.tar.gz && mv /tmp/jdk1.8.0_251 /usr/local/ && \
+#    rm -rf /var/lib/apt/lists/*
+
+
 RUN apt-get clean && apt-get update && \
     apt-get install -y --no-install-recommends \
         ca-certificates \
         locales \
-        language-pack-zh-hans \
         fontconfig \
+        wget && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+        language-pack-zh-hans \
         ttf-mscorefonts-installer \
         ttf-wqy-microhei \
         ttf-wqy-zenhei \
-        xfonts-wqy \
-        wget && \
+        xfonts-wqy && \
     localedef -i zh_CN -c -f UTF-8 -A /usr/share/locale/locale.alias zh_CN.UTF-8 && \
     locale-gen zh_CN.UTF-8 && \
     export DEBIAN_FRONTEND=noninteractive && \
-    apt-get install -y tzdata && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
-    # cd /tmp && \
-    # wget https://kkview.cn/resource/server-jre-8u251-linux-x64.tar.gz && \
-    # tar -zxf /tmp/server-jre-8u251-linux-x64.tar.gz && mv /tmp/jdk1.8.0_251 /usr/local/ && \
+    apt-get install -y tzdata && \
+    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    cd /tmp && \
+    wget https://kkview.cn/resource/server-jre-8u251-linux-x64.tar.gz && \
+    tar -zxf /tmp/server-jre-8u251-linux-x64.tar.gz && \
+    mv /tmp/jdk1.8.0_251 /usr/local/ && \
+    apt-get purge -y --auto-remove && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # 安装LibreOffice
