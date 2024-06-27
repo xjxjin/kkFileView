@@ -19,6 +19,7 @@ jobs:
       uses: actions/setup-java@v2
       with:
         java-version: '8'  # 根据你的项目需求选择合适的Java版本
+        distribution: 'adopt'
 
     - name: Build with Maven
       run: mvn -B package -DskipTests
