@@ -5,11 +5,11 @@ FROM --platform=$BUILDPLATFORM ubuntu:20.04 AS base
 LABEL maintainer="xjxjin <1702@163.com>"
 
 # 更改软件源为阿里云镜像
-RUN sed -i 's/http:\/\/archive.ubuntu.com/https:\/\/mirrors.aliyun.com/g' /etc/apt/sources.list && \
-    sed -i 's/# deb/deb/g' /etc/apt/sources.list
+# RUN sed -i 's/http:\/\/archive.ubuntu.com/https:\/\/mirrors.aliyun.com/g' /etc/apt/sources.list && \
+#    sed -i 's/# deb/deb/g' /etc/apt/sources.list
 
 # 安装依赖和Java JDK
-RUN apt-get update
+RUN apt-get clean && apt-get update
 RUN apt-get install -y --no-install-recommends \
         ca-certificates \
         locales \
